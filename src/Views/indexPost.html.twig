@@ -1,0 +1,22 @@
+{% extends "main.html.twig" %}
+
+{% block title %}
+    {{ post["title"] }}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ post["title"] }}
+                </div>
+                <div class="panel-body">
+                    {{ post["content"]|raw }}
+                    <p>
+                        <small class="text-muted col-md-6">Added by <a href="/user/{{ user.getId() }}">{{ post["email"] }}</a></small>
+                        <small class="text-muted col-md-6 text-right">Added at {{ post["created_at"] }}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

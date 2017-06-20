@@ -1,0 +1,51 @@
+{% extends "main.html.twig" %}
+
+{% block title %}
+    {{ user.getEmail() }}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 media">
+            <div class="media-left">
+                <img class="media-object" src="{{ asset('images/avatars/' ~ user.getImage()) }}" alt="Profile image">
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">{{ user.getEmail() }}</h4>
+                <h5>Posts: {% if size %} {{ size["count"] }} {% else %} 0 {% endif %}</h5>
+            </div>
+        </div>
+        {% if posts %}
+            <div class="col-md-12">
+                <h2 class="col-md-10">Posts: {{ size["count"] }}</h2>
+                <div class="col-md-2">
+                    <a href="/post/create" class="btn btn-success" role="button">Create post</a>
+                </div>
+            </div>
+            {% for post in posts %}
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><a href="/post/{{ post["id"] }}">{{ post["title"] }}</a>
+                        </div>
+                        <div class="panel-body">
+                            <div>
+                                {{ post["content"]|raw }}
+                            </div>
+                            <p>
+                                <small class="text-muted col-md-6">Added by <a href="/user/{{ user.getId() }}">{{ user.getEmail() }}</a></small>
+                                <small class="text-muted col-md-6 text-right">Added at {{ post["created_at"] }}</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% include 'pagination.html.twig' %}
+        {% else %}
+            <div class="col-md-12">
+                <h2 class="col-md-10">User has not created any posts yet</h2>
+                <div class="col-md-2">
+                    <a href="/post/create" class="btn btn-success" role="button">Create post</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
