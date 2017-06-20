@@ -17,15 +17,17 @@ use Validators\FormValidator;
 class PostController
 {
     private $postService;
+    private $commentService;
 
-    function __construct($postService) {
+    function __construct($postService,$commentService) {
         $this->postService = $postService;
+        $this->commentService = $commentService;
     }
 
     public function createGet (Application $app) {
         return $app['twig']->render('createPost.html.twig',array(
             "errors" => "",
-            "user" => $app['session']->get('user'),
+            "user" => $app['session']->get('user')
         ));
     }
 
@@ -42,17 +44,19 @@ class PostController
         } else {
             return $app['twig']->render('createPost.html.twig',array(
                 "errors" => $errors,
-                "user" => $app['session']->get('user'),
+                "user" => $app['session']->get('user')
             ));
         }
     }
 
     public function index(Application $app, $id) {
         $post = $this->postService->getPostById($id);
+        $comments = $this->commentService->getCommentsByPostId($id);
         if (!empty($post)) {
             return $app['twig']->render('indexPost.html.twig',array(
                 'post' => $post,
                 'user' => $app['session']->get('user'),
+                'comments' => $comments
             ));
         } else {
             return $app['twig']->render('404.html.twig');

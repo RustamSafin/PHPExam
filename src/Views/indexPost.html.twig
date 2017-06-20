@@ -5,17 +5,43 @@
 {% endblock %}
 {% block content %}
     <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ post["title"] }}
-                </div>
-                <div class="panel-body">
-                    {{ post["content"]|raw }}
-                    <p>
-                        <small class="text-muted col-md-6">Added by <a href="/user/{{ user.getId() }}">{{ post["email"] }}</a></small>
-                        <small class="text-muted col-md-6 text-right">Added at {{ post["created_at"] }}</small>
-                    </p>
-                </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">{{ post["title"] }}
+            </div>
+            <div class="panel-body">
+                {{ post["content"]|raw }}
+                <p>
+                    <small class="text-muted col-md-6">Added by <a
+                                href="/user/{{ post["user_id"] }}">{{ post["email"] }}</a></small>
+                    <small class="text-muted col-md-6 text-right">Added at {{ post["created_at"] }}</small>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% include 'comments.html.twig' %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form action="/comment" method="post" class="form-horizontal">
+                    <div class="form-group">
+                        <input type="hidden" name="post_id" id="post_id" value="{{ post["postid"] }}">
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="parent_id" id="parent_id" value="0">
+                    </div>
+                    <div class="form-group">
+                        <span class="col-md-1 col-md-offset-2 text-center">Comment</span>
+                        <div class="col-md-8">
+                            <textarea class="form-control" id="text" name="text"
+                                      placeholder="Enter your comment here."></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12 text-center">
+                            <button type="submit" class="btn btn-primary ">Submit</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

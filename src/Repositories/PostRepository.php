@@ -31,7 +31,7 @@ class PostRepository
     }
 
     public function getPostById($id) {
-        $sql = 'SELECT created_at::timestamp(0),user_id,title,content,posts.id,users.email FROM posts INNER JOIN users ON posts.user_id = users.id WHERE posts.id = :id;';
+        $sql = 'SELECT created_at::timestamp(0),user_id,title,content,posts.id as postId,users.email FROM posts INNER JOIN users ON posts.user_id = users.id WHERE posts.id = :id;';
         $statement=$this->db->prepare($sql);
         $statement->bindValue(':id',$id);
         if ($statement->execute()) {

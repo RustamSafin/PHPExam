@@ -1,0 +1,33 @@
+{% macro recursiveComment(comment) %}
+    {% import _self as self %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="media">
+                <div class="media-body">
+                    <h4 class="media-heading"><a
+                                href="/user/{{ comment["user_id"] }}">{{ comment["email"] }}</a>
+                    </h4>
+                    <p>{{ comment["text"] }}</p>
+                    <small class="text-muted text-left "><a href="#text" class="reply"
+                                                            id="{{ comment["id"] }}">Comment</a>
+                    </small>
+                    <small class="text-muted text-right">Added at {{ comment["created_at"] }}</small>
+                    {% if comment["replies"] is defined %}
+                        {% set childs = comment["replies"] %}
+                        {% for child in childs %}
+                            {{ self.recursiveComment(child) }}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endmacro %}
+
+{% from _self import recursiveComment %}
+{% if comments %}
+    {% for comment in comments %}
+        {{ recursiveComment(comment) }}
+    {% endfor %}
+{% endif %}

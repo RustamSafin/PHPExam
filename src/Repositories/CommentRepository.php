@@ -26,12 +26,15 @@ class CommentRepository
         $statement->bindValue(':pid',$pid);
         $statement->bindValue(':uid',$uid);
         $statement->bindValue(':parentId',$parentId);
-        $statement->execute();
-        return $this->db->lastInsertId('posts_id_seq');
+        if ($statement->execute()) {
+            return $statement->fetch();
+        }else{
+            return false;
+        }
     }
 
     public function getCommentsByPostId($postId) {
-        $sql = 'SELECT comments.id, text, post_id, user_id, created_at::timestamp(0), parent_id, users.email FROM comments INNER JOIN users ON posts.user_id = users.id WHERE post_id = :postId ORDER BY created_at DESC ';
+        $sql = 'SELECT comments.id, text, post_id, user_id, created_at::timestamp(0), parent_id, email FROM comments INNER JOIN users ON comments.user_id = users.id WHERE post_id = :postId ORDER BY created_at DESC ';
 
         $statement=$this->db->prepare($sql);
         $statement->bindValue(':postId',$postId);

@@ -40,12 +40,20 @@ $app['repository.post'] = function ($app) {
     return new Repositories\PostRepository($app['db']);
 };
 
+$app['repository.comment'] = function ($app) {
+    return new Repositories\CommentRepository($app['db']);
+};
+
 $app['services.user'] = function ($app) {
     return new Services\UserService($app['repository.user']);
 };
 
 $app['services.post'] = function ($app) {
     return new Services\PostService($app['repository.post']);
+};
+
+$app['services.comment'] = function ($app) {
+    return new Services\CommentService($app['repository.comment']);
 };
 
 $app['login.controller'] = function ($app) {
@@ -57,7 +65,11 @@ $app['registration.controller'] = function ($app) {
 };
 
 $app['post.controller'] = function ($app) {
-    return new Controllers\PostController($app['services.post']);
+    return new Controllers\PostController($app['services.post'],$app['services.comment']);
+};
+
+$app['comment.controller'] = function ($app) {
+    return new Controllers\CommentController($app['services.comment']);
 };
 
 $app['profile.controller'] = function ($app) {

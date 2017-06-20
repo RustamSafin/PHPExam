@@ -30,3 +30,5 @@ $app->get('/profile','profile.controller:profile');
 
 $app->get('/user/{id}','profile.controller:userProfile')
     ->assert('id','\d+');
+
+$app->post('/comment', 'comment.controller:commentPost');

@@ -5,18 +5,22 @@
 {% endblock %}
 {% block content %}
     <div class="row">
-        <div class="col-md-12 media">
-            <div class="media-left">
-                <img class="media-object" src="{{ asset('images/avatars/' ~ user.getImage()) }}" alt="Profile image">
-            </div>
-            <div class="media-body">
-                <h4 class="media-heading">{{ user.getEmail() }}</h4>
-                <h5>Posts: {% if size %} {{ size["count"] }} {% else %} 0 {% endif %}</h5>
+        <div class="col-md-12 panel panel-default">
+            <div class="panel-body">
+                <div class=" media">
+                    <div class="media-left">
+                        <img class="media-object" src="{{ asset('images/avatars/' ~ user.getImage()) }}" alt="Profile image">
+                    </div>
+                    <div class="media-body">
+                        <h2 class="media-heading">{{ user.getEmail() }}</h2>
+                        <h5>Posts: {% if size %} {{ size["count"] }} {% else %} 0 {% endif %}</h5>
+                    </div>
+                </div>
             </div>
         </div>
         {% if posts %}
             <div class="col-md-12">
-                <h2 class="col-md-10">Posts: {{ size["count"] }}</h2>
+                <h2 class="col-md-10 med">Posts: {{ size["count"] }}</h2>
                 <div class="col-md-2">
                     <a href="/post/create" class="btn btn-success" role="button">Create post</a>
                 </div>
