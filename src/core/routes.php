@@ -7,9 +7,10 @@
  */
 
 
-$app->get('/','main.controller:main');
+$app->get('/','MainController:main');
 
-$app->get('/login', 'login.controller:index');
+//$app->get('/login', 'login.controller:index');
+$app->get('/login', 'login.controller:login');
 
 $app->get('/logout', 'login.controller:logout');
 

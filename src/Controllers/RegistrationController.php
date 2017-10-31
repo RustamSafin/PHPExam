@@ -10,6 +10,7 @@ namespace Controllers;
 
 use Models\User;
 use Silex\Application;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\Request;
 use Validators\FormValidator;
 

@@ -8,10 +8,15 @@
 
 namespace Controllers;
 
+use Doctrine\DBAL\Types\TextType;
 use Silex\Application;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\HttpFoundation\Request;
-use Validators\FormValidator;
-
+use Symfony\Component\Validator\Constraints as Assert;
+use Validators\CorrectDate;
 
 class LoginController {
 
@@ -22,7 +27,7 @@ class LoginController {
     }
 
     public function index(Application $app) {
-        return $app['twig']->render('login.html.twig',array("errors" => ''));
+
     }
 
     public function logout(Application $app) {
@@ -31,25 +36,53 @@ class LoginController {
     }
 
     public function login(Application $app, Request $request) {
-        $email = $request->get('email');
-        $password = $request->get('password');
-        $errors = FormValidator::validateLogFrom($request->get('email'), $request->get('password'));
-        $user = $this->userService->getUserByEmail($email);
+        $errors = '';
+        $data = array(
+            'email' => '',
+            'password' => '',
+            'birth' => new \DateTime()
+        );
+        $form = $app['form.factory']->createBuilder(FormType::class, $data)
+            ->add('email', EmailType::class, array(
+                'constraints' => array(new Assert\NotBlank(), new Assert\Email(), new Assert\Required()),
+                'attr' => array('class' => 'form-control', 'placeholder' => 'Your email')
+            ))
+            ->add('password',PasswordType::class, array(
+                'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min'=>5)), new Assert\Required()),
+                'attr' => array('class' => 'form-control', 'placeholder' => 'Enter password')
+            ))
+            ->add('birth', DateType::class, array(
+                'constraints' => array(new Assert\NotBlank(), new Assert\Required(), new Assert\DateTime(), new CorrectDate()),
+                'attr' => array('class' => 'form-control', 'placeholder' => 'Enter your birth date')
+            ))
+            ->getForm();
+        $form->handleRequest($request);
+        if (isset($_POST)) {
 
-        $hash=$user->getPassword();
-        if ($user === null) {
-            $errors[] = "User not found";
-        } elseif(!password_verify($password,$hash)) {
-            $errors[] = "Wrong password";
-        }
+            if ($form->isValid()) {
+                $data = $form->getData();
 
-        if (empty($errors)) {
-            $session = $app["session"];
-            $session->set("user", $user);
-            return $app->redirect('/');
+                $email = $data['email'];
+                $password = $data['password'];
+
+                $user = $this->userService->getUserByEmail($email);
+                $hash=$user->getPassword();
+
+                if ($user === null) {
+                    $errors[] = "User not found";
+                } elseif(!password_verify($password,$hash)) {
+                    $errors[] = "Wrong password";
+                }
+
+                if (empty($errors)) {
+                    $session = $app["session"];
+                    $session->set("user", $user);
+                    return $app->redirect('/');
+                }
+            }
+
         }
-        return $app["twig"]->render("login.html.twig", array(
-            "errors" => $errors,
-        ));
+        return $app['twig']->render('login.html.twig',array("errors" => $errors,'form' => $form->createView()));
+
     }
 }
